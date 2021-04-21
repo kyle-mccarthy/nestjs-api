@@ -1,0 +1,21 @@
+{
+  "name": "nextjs-api",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "author": "Kyle McCarthy",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/convict": "^6.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.24.0",
+    "typescript": "^4.2.4"
+  },
+  "peerDependencies": {
+    "@hapi/boom": "^9.1.2",
+    "ajv": "^8.1.0",
+    "awilix": "^4.3.3",
+    "convict": "^6.0.1",
+    "next": "^10.1.3"
+  }
+}
