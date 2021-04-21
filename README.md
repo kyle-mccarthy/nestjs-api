@@ -1,4 +1,4 @@
-# nestjs-api
+# nextjs-api
 
 Utilities to improve developer experience when using server side rendering and
 API routes in Next.js.
