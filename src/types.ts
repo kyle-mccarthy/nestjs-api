@@ -1,4 +1,4 @@
-import type { Ajv as AjvValidator, Options as AjvOptions } from "ajv";
+import type { default as AjvValidator, Options as AjvOptions } from "ajv";
 import type { AwilixContainer } from "awilix";
 import type {
   Schema as CfgSchema,

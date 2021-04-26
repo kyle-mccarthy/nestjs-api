@@ -33,3 +33,5 @@ export function factory(
     router,
   };
 }
+
+export default factory;

@@ -35,8 +35,8 @@ interface RoutableInternals {
 function routeExists(route: any): route is Route {
   return (
     typeof route === "object" &&
-    route?.method === "string" &&
-    route?.handler === "function"
+    typeof route?.method === "string" &&
+    typeof route?.handler === "function"
   );
 }
 
