@@ -12,7 +12,7 @@ describe("smoke test basic routing", () => {
     });
 
     testApiHandler({
-      requestPatcher: (req) => (req.url = "/api/test"),
+      requestPatcher: (req) => (req.url = "/api/test-get"),
       handler: { default: handler } as any,
       test: async ({ fetch }) => {
         const res = await fetch({ method: "GET" });
@@ -39,6 +39,7 @@ describe("smoke test basic routing", () => {
     });
 
     testApiHandler({
+      requestPatcher: (req) => (req.url = "/api/test-post"),
       handler,
       test: async ({ fetch }) => {
         const res = await fetch({
@@ -54,6 +55,23 @@ describe("smoke test basic routing", () => {
           data: POST_DATA,
         });
 
+        done();
+      },
+    });
+  });
+
+  test("getApp returns valid instance with referential equality context's app in route handler", async (done) => {
+    expect(getApp()).toBeDefined();
+
+    const handler = router().get(async (ctx) => {
+      expect(getApp).toStrictEqual(ctx.app);
+      ctx.res.json({ message: "ok" });
+    });
+
+    testApiHandler({
+      handler: { default: handler } as any,
+      test: async ({ fetch }) => {
+        await fetch({ method: "GET" });
         done();
       },
     });
