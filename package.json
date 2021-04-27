@@ -16,6 +16,7 @@
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "ajv": "^8.1.0",
+    "ajv-errors": "^3.0.0",
     "awilix": "^4.3.3",
     "convict": "^6.0.1",
     "eslint": "^7.24.0",
@@ -29,6 +30,7 @@
   "peerDependencies": {
     "@hapi/boom": "^9.1.2",
     "ajv": "^8.1.0",
+    "ajv-errors": "^3.0.0",
     "awilix": "^4.3.3",
     "convict": "^6.0.1",
     "next": "^10.1.3"

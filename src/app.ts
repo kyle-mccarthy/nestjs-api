@@ -1,7 +1,9 @@
 import Ajv from "ajv";
+import ajvErrors from "ajv-errors";
 import { createContainer, Resolver } from "awilix";
 import convict from "convict";
 import type { AppOptions, Config, Container, Validator } from "./types";
+import assert from "assert";
 
 export class App {
   public container: Container = createContainer();
@@ -11,16 +13,23 @@ export class App {
   private static _instance: App;
 
   private constructor(options?: AppOptions) {
-    this.validator = new Ajv(options?.validator);
+    const validatorOptions = options?.validator || {
+      coerceTypes: true,
+    };
+
+    this.validator = new Ajv({ ...validatorOptions, allErrors: true });
+    ajvErrors(this.validator);
+
     if (options?.config) {
       this.config = convict(options.config.schema, options.config.options);
     }
   }
 
   public static instance(): App {
-    if (!this._instance) {
-      this._instance = new App();
-    }
+    assert(
+      this._instance,
+      "[next-api] app not property initialized, create app instance using App.createApp"
+    );
     return this._instance;
   }
 

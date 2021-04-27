@@ -7,18 +7,61 @@ import type {
   RouteOptions,
   Routable,
   Context,
+  RouteValidation,
+  ValidationFunction,
+  ValidationSchema,
 } from "./types";
 import { App } from "./app";
 
 class Route {
+  public compiledSchemas: Partial<
+    Record<keyof RouteValidation, ValidationFunction>
+  > = {};
   constructor(
     public method: HTTPMethod,
     public handler: RequestHandler,
     public options?: RouteOptions
   ) {}
 
+  async runSchemaValidation(ctx: Context): Promise<void> {
+    await this.validateSchema("body", ctx);
+    await this.validateSchema("params", ctx);
+    await this.validateSchema("headers", ctx);
+    await this.validateSchema("querystring", ctx);
+  }
+
+  protected isFunction(value: unknown): value is Function {
+    return typeof value === "function";
+  }
+
+  protected async validateSchema(
+    key: keyof RouteValidation,
+    ctx: Context
+  ): Promise<void> {
+    const schema: ValidationSchema | undefined = this.options?.schema?.[key];
+
+    if (schema) {
+      // if the schema exists but hasn't been compiled yet, compile it and cache
+      // it in the compiled schemas object
+      if (!this.compiledSchemas[key]) {
+        this.compiledSchemas[key] = ctx.app.validator.compile(schema);
+      }
+
+      const validator = this.compiledSchemas[key];
+
+      if (this.isFunction(validator) && !validator(ctx.req.body)) {
+        const error = Boom.badRequest();
+        error.output.payload.details = validator.errors;
+        throw error;
+      }
+    }
+  }
+
   async run(ctx: Context): Promise<void> {
+    await this.runSchemaValidation(ctx);
+
     await this.handler(ctx);
+
     return;
   }
 }
@@ -47,7 +90,7 @@ export const router = (): Routable => {
   ): Promise<void> {
     const app = App.instance();
     const ctx = { req, res, app };
-    self.runLifeCycle(ctx);
+    await self.runLifeCycle(ctx);
   } as Routable & RoutableInternals;
 
   self.routes = {};
